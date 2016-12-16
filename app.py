@@ -4,6 +4,7 @@ from flask_restful import Api, Resource
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URL'] = os.environ['DATABASE_URL']
