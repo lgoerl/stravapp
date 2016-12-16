@@ -57,7 +57,7 @@ class RouteSchema(Schema):
 routes = Blueprint('routes', __name__)
  
 #Initialize the UserSchema we defined in models.py
-schema = RoutesSchema(strict=True)
+schema = RouteSchema(strict=True)
  
 #Initialize the  API  object using the Flask-RESTful API class
 api = Api(routes)
