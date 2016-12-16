@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Flask, Blueprint, request, jsonify, make_response
 from marshmallow_jsonapi import Schema, fields
 from flask_restful import Api, Resource
 from flask.ext.sqlalchemy import SQLAlchemy
