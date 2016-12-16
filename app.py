@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
 from marshmallow_jsonapi import Schema, fields
 from flask_restful import Api, Resource
-from app.models import db,Users, UsersSchema
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
