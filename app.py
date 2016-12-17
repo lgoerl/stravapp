@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, request, jsonify, make_response
+from flask import Flask, Blueprint, request, jsonify, make_response, render_template
 from marshmallow_jsonapi import Schema, fields
 from flask_restful import Api, Resource
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -76,11 +76,9 @@ api.add_resource(CreateListRoutes, '.json')
 
 
 
-'''
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
-'''
 
 
 
