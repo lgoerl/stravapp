@@ -55,6 +55,7 @@ class RouteSchema(Schema):
 
 #Initialize a Flask Blueprint,
 routes = Blueprint('routes', __name__)
+app.register_blueprint(routes, url_prefix='/api/v1/routes')
  
 #Initialize the UserSchema we defined in models.py
 schema = RouteSchema(strict=True)
