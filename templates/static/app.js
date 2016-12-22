@@ -2,7 +2,7 @@
 var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services', 'toaster']);
  
 // Create a Route Resource Object using the resource service
-angular.module('myApp.services', []).factory('Route', function($resource) {
+angular.module('myApp.services', []).factory('Routes', function($resource) {
   return $resource('api/v1/routes/:id.json', { id:'@routes.id' }, {
     update: {
       method: 'PATCH',
@@ -36,7 +36,7 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
 });
  
 // Define CRUD controllers to make the add, update and delete calls using the Route resource we defined earlier
-angular.module('myApp.controllers', []).controller('RouteListController', function($scope, Route, $state, toaster) {
+angular.module('myApp.controllers', []).controller('RouteListController', function($scope, Routes, $state, toaster) {
         Route.get(function(data) {// Get all the routes. Issues a GET to /api/v1/routes.json
                                         
                      $scope.routes = [];
