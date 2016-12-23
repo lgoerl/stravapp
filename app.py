@@ -72,7 +72,7 @@ class CreateListRoutes(Resource):
         return results
 
 
-#Map classes  to API enpoints
+#Map classes to API enpoints
 api.add_resource(CreateListRoutes, '.json')
 
 
@@ -81,6 +81,9 @@ api.add_resource(CreateListRoutes, '.json')
 def index():
     return render_template('index.html')
 
+@app.route('/test')
+def fun():
+    return json.dumps([1,2,3])
 
 
 
