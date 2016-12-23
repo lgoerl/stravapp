@@ -81,7 +81,7 @@ api.add_resource(CreateListRoutes, '.json')
 def index():
     return render_template('index.html')
 
-@app.route('/test')
+@app.route('/test',methods=['GET','POST'])
 def fun():
     return json.dumps([1,2,3])
 
