@@ -83,7 +83,8 @@ def index():
 
 @app.route('/test',methods=['GET','POST'])
 def fun():
-    return json.dumps([1,2,3])
+    routes_query = Routes.query.all()
+    return json.dumps(routes_query)
 
 
 
