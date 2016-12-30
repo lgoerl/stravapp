@@ -4,13 +4,17 @@ from flask_restful import Api, Resource
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
-import os, json
+import os, json, records
 
+#db_url='postgres://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/my_db_production?sslca=rds-ssl-ca-cert.pem&sslmode=require&encrypt=true'
+db_url='postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?user=lgoerl&password=pg34vn00'
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 #app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 class Routes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,8 +87,13 @@ def index():
 
 @app.route('/test',methods=['GET','POST'])
 def fun():
-    routes_query = Routes.query.all()
-    return json.dumps(routes_query)
+    routes_query = Routes.query.get(5)
+    #return type(routes_query)
+    return routes_query
+
+@app.route('/show',methods=['GET','POST'])
+def show_all():
+    return render_template('show_all.html', routes = Routes.query.limit(100) )
 
 
 
