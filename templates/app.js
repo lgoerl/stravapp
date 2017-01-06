@@ -25,19 +25,17 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
         url: '/',
         title: 'Routes',
         template: '<ui-view/>'
-    })
-  .state('routes.list', {
-    url: 'list',
-    templateUrl: 'list.html',
-    controller: 'RouteListController',      
- 
- 
-  })
+      })
+      .state('routes.list', { 
+        url: '/list',
+        template: '/partial/list.html',
+        controller: 'RouteListController'
+      })
 });
  
 // Define CRUD controllers to make the add, update and delete calls using the Route resource we defined earlier
 angular.module('myApp.controllers', []).controller('RouteListController', function($scope, Routes, $state, toaster) {
-        Route.get(function(data) {// Get all the routes. Issues a GET to /api/v1/routes.json
+        Routes.get(function(data) {// Get all the routes. Issues a GET to /api/v1/routes.json
                                         
                      $scope.routes = [];
                      angular.forEach(data.data, function(value, key)

@@ -1,28 +1,33 @@
+<html ng-app='myApp'>
 <meta charset="utf-8">
-<!-- CSS-->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet">
-<!-- <link href="static/css/my.css" rel="stylesheet"> -->
-<!-- JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-resource.js"> </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.js"></script>
-<script src="https://code.angularjs.org/1.2.0/angular-animate.min.js"></script>
-<script src="static/app.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
+<head>
+	<!-- CSS-->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet">
+	<!-- <link href="static/css/my.css" rel="stylesheet"> -->
+	<!-- JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-resource.js"> </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.1.0/toaster.min.js"></script>
+	<script src="https://code.angularjs.org/1.2.0/angular-animate.min.js"></script>
+	<script src="static/app.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
+</head>
 
 <div id="main">
  
   <div class="nav">
    
     <ul>
+      <!-- ui-sref binds a link to a state (in this case, routes.list state in the app.js) -->
       <li><a ui-sref="routes.list">List</a></li>
     </ul>
   </div>
-   
-  <div ui-view="">  </div>
+  <!-- ui-view tells $state where to place your templates. here the routes.list has template list.html -->
+  <div ui-view=""></div>
    
 </div>
            
 <toaster-container></toaster-container>
+</html>

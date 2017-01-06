@@ -57,37 +57,41 @@ class RouteSchema(Schema):
     class Meta:
         type_ = 'routes'
 
+
+
 #Initialize a Flask Blueprint,
-routes = Blueprint('routes', __name__)
+'''routes = Blueprint('routes', __name__)
 app.register_blueprint(routes, url_prefix='/api/v1/routes')
- 
+'''
 #Initialize the UserSchema we defined in models.py
 schema = RouteSchema(strict=True)
- 
-#Initialize the  API  object using the Flask-RESTful API class
-api = Api(routes)
+
+
+
+#Initialize the  API object using the Flask-RESTful API class
+api = Api(app)
  
 # Create CRUD classes using the Flask-RESTful Resource class
 class CreateListRoutes(Resource):
     
     def get(self):
-        routes_query = Routes.query.all()
+        routes_query = Routes.query.limit(5)
         results = schema.dump(routes_query, many=True).data
-        return results
+        return results['data']
 
 
-#Map classes to API enpoints
-api.add_resource(CreateListRoutes, '.json')
+#Map classes to API enspoints
+api.add_resource(CreateListRoutes, '/api/v1/routes')
 
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html')#/list
 
 @app.route('/test',methods=['GET','POST'])
 def fun():
-    routes_query = Routes.query.get(5)
+    routes_query = Routes.query.limit(5)
     #return type(routes_query)
     return routes_query
 
