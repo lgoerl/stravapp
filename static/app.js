@@ -1,17 +1,21 @@
 //Initialize an Angularjs Application
 var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services', 'toaster']);
  
+
+
+
 // Create a Route Resource Object using the resource service
 angular.module('myApp.services', ['ngResource']).factory('RouteFactory', function($resource) {
-  return $resource('api/v1/routes/:id', { id:'@routes.id' }, {
-    update: {
-      method: 'PATCH',
-    }
-    }, {
-    stripTrailingSlashes: false
-    });
+  return $resource('api/v1/routes/:id', 
+    { id:'@routes.id' }, 
+    { update: {method: 'PATCH' }}, 
+    { stripTrailingSlashes: false }
+    );
 });
  
+
+
+
 // Create routes with UI-Router and display the appropriate HTML file for listing routes
 angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
   //
@@ -35,7 +39,18 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
   })
 });
  
+
+
 // Define CRUD controllers to make the add, update and delete calls using the Route resource we defined earlier
 angular.module('myApp.controllers', []).controller('RouteListController', function($scope, RouteFactory) {
-  $scope.routes = RouteFactory.query(); 
+    $scope.routes = RouteFactory.query();
+    $scope.routes.$promise.then(function(data){
+      console.log(data);
+    });
+//    RouteFactory.query().$promise.then(function(data){
+//     $scope.routes = data;
+//    });
+//  $scope.routes = RouteFactory.query().$promise.then(function(data){
+//      $scope.routes = data;
+//  }); 
 });
