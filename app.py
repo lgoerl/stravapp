@@ -29,7 +29,7 @@ class Routes(db.Model):
     sub_type = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Float, nullable=False)
 
- 
+
 class RouteSchema(Schema):
 
     not_blank = validate.Length(min=1, error='Field cannot be blank')
@@ -70,12 +70,12 @@ api = Api(api_v1)
 schema = RouteSchema(strict=True)
 
 
- 
+
 # Create CRUD classes using the Flask-RESTful Resource class
 class CreateListRoutes(Resource):
-    
+
     def get(self):
-        routes_query = Routes.query.limit(5)
+        routes_query = Routes.query.limit(50)
         results = schema.dump(routes_query, many=True).data
         #return results['data']
         return results
