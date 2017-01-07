@@ -93,7 +93,7 @@ app.register_blueprint(api_v1, url_prefix='/api/v1/routes')
 def index():
     return render_template('index.html')#/list
 
-@app.route('/')
+@app.route('/test')
 def index():
     return os.environ['DATABASE_URL']
 
