@@ -94,7 +94,7 @@ def index():
     return render_template('index.html')#/list
 
 @app.route('/test')
-def index():
+def test():
     return os.environ['DATABASE_URL']
 
 
