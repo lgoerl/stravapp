@@ -11,3 +11,4 @@ marshmallow==2.3.0
 marshmallow-jsonapi==0.3.0
 Flask-RESTful==0.3.4
 Flask-Script==2.0.5
+Flask-Cors==3.0.2
