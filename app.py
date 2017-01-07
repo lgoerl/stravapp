@@ -7,9 +7,11 @@ from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
 import os, json
 
+#postgres://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/my_db_production?sslca=rds-ssl-ca-cert.pem&sslmode=require&encrypt=true
+db_url='postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?user=lgoerl&password=pg34vn00'
 app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 #app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
