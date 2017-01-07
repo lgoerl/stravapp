@@ -1,13 +1,14 @@
 //Initialize an Angularjs Application
-var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services']);
+var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services', 'toaster']);
  
 
 
 
 // Create a Route Resource Object using the resource service
 angular.module('myApp.services', ['ngResource']).factory('RouteFactory', function($resource) {
-  return $resource('api/v1/routes/:id', 
+  return $resource('api/v1/routes/:id.json', 
     { id:'@routes.id' }, 
+    { 'query': {method: 'GET', isArray:true }},
     { update: {method: 'PATCH' }}, 
     { stripTrailingSlashes: false }
     );
@@ -18,13 +19,11 @@ angular.module('myApp.services', ['ngResource']).factory('RouteFactory', functio
 
 // Create routes with UI-Router and display the appropriate HTML file for listing routes
 angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
-  //
-  // For any unmatched url, redirect to /state1
+
   $urlRouterProvider.otherwise("/");
   
     $stateProvider
       .state('routes', {       
-        // https://github.com/angular-ui/ui-router/wiki/Nested-States-and-Nested-Views
         abstract: true,
         url: '/',
         title: 'Routes',
@@ -41,9 +40,30 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
  
 
 
-// Define CRUD controllers to make the add, update and delete calls using the Route resource we defined earlier
-angular.module('myApp.controllers', []).controller('RouteListController', function($scope, RouteFactory) {
-    $scope.routes = RouteFactory.query();
+// Define CRUD controllers to make the API calls using the RouteFactory resource we defined earlier
+angular.module('myApp.controllers', []).controller('RouteListController', function($scope, RouteFactory, toaster) {
+  RouteFactory.get(function(data){
+    $scope.routes = [];
+    angular.forEach(data.data, function(object){
+      this.route = object.attributes;
+      this.route['id'] = object.id;
+      this.push(this.route);
+    }, $scope.routes);
+  },
+  function(error){
+    toaster.pop({
+      type: 'error',
+      title: 'Error',
+      body: error,
+      showCloseButton: true,
+      timeout: 0
+    });
+  });
+});
+
+
+
+/*    $scope.routes = RouteFactory.query();
 
 //    RouteFactory.query().$promise.then(function(data){
 //     $scope.routes = data;
@@ -51,5 +71,5 @@ angular.module('myApp.controllers', []).controller('RouteListController', functi
   $scope.routes = RouteFactory.query().$promise.then(function(data){
       $scope.routes = data;
   },
-  function(error){ console.log(error); }); 
-});
+  function(error){ console.log(error); }); */
+

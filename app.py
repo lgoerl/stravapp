@@ -7,7 +7,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
 import os, json
 
-#db_url='postgres://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/my_db_production?sslca=rds-ssl-ca-cert.pem&sslmode=require&encrypt=true'
 db_url='postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?user=lgoerl&password=pg34vn00'
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -18,6 +17,7 @@ db = SQLAlchemy(app)
 
 
 class Routes(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
     length_in_meters = db.Column(db.Float, nullable=False)
@@ -32,7 +32,7 @@ class Routes(db.Model):
 
  
 class RouteSchema(Schema):
- 
+
     not_blank = validate.Length(min=1, error='Field cannot be blank')
     # add validate=not_blank in required fields
     id = fields.Integer(required=True)
@@ -54,20 +54,20 @@ class RouteSchema(Schema):
         else:
             self_link = "/routes/{}".format(data['id'])
         return {'self': self_link}
-            #The below type object is a resource identifier object as per               http://jsonapi.org/format/#document-resource-identifier-objects
+            #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
         type_ = 'routes'
 
 
 
-#Initialize a Flask Blueprint,
+# Initialize a Flask Blueprint,
 api_v1 = Blueprint('api', __name__)
 CORS(api_v1)
-#Initialize the  API object using the Flask-RESTful API class
+# Initialize the  API object using the Flask-RESTful API class
 api = Api(api_v1)
 
 
-#Initialize the UserSchema we defined in models.py
+# Initialize the UserSchema we defined in models.py
 schema = RouteSchema(strict=True)
 
 
@@ -78,12 +78,13 @@ class CreateListRoutes(Resource):
     def get(self):
         routes_query = Routes.query.limit(5)
         results = schema.dump(routes_query, many=True).data
-        return results['data']
+        #return results['data']
+        return results
 
 
-#Map classes to API enspoints
-api.add_resource(CreateListRoutes, '/api/v1/routes')
-app.register_blueprint(api_v1)
+# Map classes to API enspoints
+api.add_resource(CreateListRoutes, '.json')
+app.register_blueprint(api_v1, url_prefix='/api/v1/routes')
 
 
 
@@ -91,33 +92,12 @@ app.register_blueprint(api_v1)
 def index():
     return render_template('index.html')#/list
 
-
+# Testing to confirm api actually works
 @app.route('/show',methods=['GET','POST'])
 def show_all():
     return render_template('show_all.html', routes = Routes.query.limit(100) )
 
 
-
-'''
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    email = db.Column(db.String(120), unique=True)
-
-    def __init__(self, name, email):
-        self.name = name
-        self.email = email
-
-    def __repr__(self):
-        return '<Name %r>' % self.name
-
-
-@app.route('/robots.txt')
-def robots():
-    res = app.make_response('User-agent: *\nAllow: /')
-    res.mimetype = 'text/plain'
-    return res
-'''
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
