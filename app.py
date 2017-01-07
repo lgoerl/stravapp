@@ -1,7 +1,8 @@
 from flask import Flask, Blueprint, request, jsonify, make_response, render_template
 from marshmallow_jsonapi import Schema, fields
 from flask_restful import Api, Resource
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
 import os, json
@@ -60,16 +61,16 @@ class RouteSchema(Schema):
 
 
 #Initialize a Flask Blueprint,
-'''routes = Blueprint('routes', __name__)
-app.register_blueprint(routes, url_prefix='/api/v1/routes')
-'''
+api_v1 = Blueprint('api', __name__)
+CORS(api_v1)
+#Initialize the  API object using the Flask-RESTful API class
+api = Api(api_v1)
+
+
 #Initialize the UserSchema we defined in models.py
 schema = RouteSchema(strict=True)
 
 
-
-#Initialize the  API object using the Flask-RESTful API class
-api = Api(app)
  
 # Create CRUD classes using the Flask-RESTful Resource class
 class CreateListRoutes(Resource):
@@ -82,6 +83,7 @@ class CreateListRoutes(Resource):
 
 #Map classes to API enspoints
 api.add_resource(CreateListRoutes, '/api/v1/routes')
+app.register_blueprint(api_v1)
 
 
 
@@ -89,11 +91,6 @@ api.add_resource(CreateListRoutes, '/api/v1/routes')
 def index():
     return render_template('index.html')#/list
 
-@app.route('/test',methods=['GET','POST'])
-def fun():
-    routes_query = Routes.query.limit(5)
-    #return type(routes_query)
-    return routes_query
 
 @app.route('/show',methods=['GET','POST'])
 def show_all():
