@@ -43,13 +43,14 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
 // Define CRUD controllers to make the API calls using the RouteFactory resource we defined earlier
 angular.module('myApp.controllers', []).controller('RouteListController', function($scope, RouteFactory, toaster) {
   RouteFactory.get(function(data){
-    $scope.routes = [];
+/*    $scope.routes = [];
     angular.forEach(data.data, function(object){
       this.route = object.attributes;
       this.route['id'] = object.id;
       this.push(this.route);
     }, $scope.routes);
-  },
+  }*/
+      $scope.routes = data.data},
   function(error){
     toaster.pop({
       type: 'error',
