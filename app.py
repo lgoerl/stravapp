@@ -93,6 +93,11 @@ app.register_blueprint(api_v1, url_prefix='/api/v1/routes')
 def index():
     return render_template('index.html')#/list
 
+@app.route('/')
+def index():
+    return os.environ['DATABASE_URL']
+
+
 # Testing to confirm api actually works
 @app.route('/show',methods=['GET','POST'])
 def show_all():
