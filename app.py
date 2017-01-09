@@ -7,8 +7,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from marshmallow import validate, ValidationError
 import os, json
 
-#postgres://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/my_db_production?sslca=rds-ssl-ca-cert.pem&sslmode=require&encrypt=true
-db_url='postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?user=lgoerl&password=pg34vn00'
+#postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?sslca=rds-ssl-ca-cert.pem&sslmode=require&encrypt=true
+#db_url='postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?user=lgoerl&password=pg34vn00'
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -31,7 +31,7 @@ class Routes(db.Model):
     sub_type = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Float, nullable=False)
 
-
+ 
 class RouteSchema(Schema):
 
     not_blank = validate.Length(min=1, error='Field cannot be blank')
@@ -72,12 +72,12 @@ api = Api(api_v1)
 schema = RouteSchema(strict=True)
 
 
-
+ 
 # Create CRUD classes using the Flask-RESTful Resource class
 class CreateListRoutes(Resource):
-
+    
     def get(self):
-        routes_query = Routes.query.limit(50)
+        routes_query = Routes.query.limit(5)
         results = schema.dump(routes_query, many=True).data
         #return results['data']
         return results
