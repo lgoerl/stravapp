@@ -88,11 +88,11 @@ app.register_blueprint(api_v1, url_prefix='/api/v1/routes')
 
 @app.route('/')
 def index():
-    return render_template('index.html')#/list
+    return render_template('index.html')
 
 @app.route('/test')
 def test():
-    return os.environ['DATABASE_URL']
+    return render_template('index.html')
 
 
 # Testing to confirm api actually works
@@ -104,4 +104,4 @@ def show_all():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)

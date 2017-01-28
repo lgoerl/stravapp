@@ -1,5 +1,5 @@
 //Initialize an Angularjs Application
-var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services', 'toaster']);
+var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services', 'toaster','ui.grid']);
  
 
 
@@ -31,7 +31,7 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
     })
       .state('routes.list', {
         url: 'list',
-        templateUrl: '../static/partials/list.html',
+        templateUrl: '../static/partials/list2.html',
         controller: 'RouteListController',      
  
  
@@ -43,14 +43,19 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
 // Define CRUD controllers to make the API calls using the RouteFactory resource we defined earlier
 angular.module('myApp.controllers', []).controller('RouteListController', function($scope, RouteFactory, toaster) {
   RouteFactory.get(function(data){
-/*    $scope.routes = [];
+    $scope.routes = [];
     angular.forEach(data.data, function(object){
-      this.route = object.attributes;
+      this.route = {}
       this.route['id'] = object.id;
+      this.route['Name'] = object.attributes.name;
+      this.route['Length'] = object.attributes.length_in_meters;
+      this.route['Popularity'] = object.attributes.popularity;
       this.push(this.route);
     }, $scope.routes);
-  }*/
-      $scope.routes = data.data},
+  },
+
+/*      $scope.routes = data.data},*/
+
   function(error){
     toaster.pop({
       type: 'error',
@@ -61,16 +66,3 @@ angular.module('myApp.controllers', []).controller('RouteListController', functi
     });
   });
 });
-
-
-
-/*    $scope.routes = RouteFactory.query();
-
-//    RouteFactory.query().$promise.then(function(data){
-//     $scope.routes = data;
-//    });
-  $scope.routes = RouteFactory.query().$promise.then(function(data){
-      $scope.routes = data;
-  },
-  function(error){ console.log(error); }); */
-
