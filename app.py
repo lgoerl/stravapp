@@ -8,8 +8,9 @@ from marshmallow import validate, ValidationError
 import os, json
 
 app = Flask(__name__)
+db_url='postgresql://lgoerl:pg34vn00@lgoerlsandbox.co0kbuzosniz.us-west-1.rds.amazonaws.com:5432/StravaRoutesTest?user=lgoerl&password=pg34vn00'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -103,10 +104,8 @@ class queryRoutes(Resource):
                 q = q.filter(Routes.sub_type==int(params['sub_type']))
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
-            results = q.all()
-            if results != None:
-                results = schema.dump(q.all(), many=True).data
-
+            results_query = q.limit(20)
+            results = schema.dump(results_query, many=True).data
             return results
         else: 
             return 'You have specified the following invalid search parameters: {}.'.format(', '.join(invalids))
@@ -115,7 +114,7 @@ class queryRoutes(Resource):
 
 # Map classes to API enspoints
 api.add_resource(CreateListRoutes, '.json')
-api.add_resource(queryRoutes, '/<custom_input>', endpoint='api/v2/routes/query')
+api.add_resource(queryRoutes, '/<custom_input>.json', endpoint='api/v2/routes/query')
 app.register_blueprint(api_v1, url_prefix='/api/v2/routes')
 
 

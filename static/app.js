@@ -1,10 +1,17 @@
 // Initialize AngularJS app and inject dependencies
-var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers']);
+var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers', 'ui.grid']);
 
 // Create a Route Resource Object using the resource service
 angular.module('myApp.Services', ['ngResource']).factory('queryFactory', function($resource) {
   return $resource('api/v2/routes/:endpoint.json', 
     { endpoint:'@endpoint' }, 
+    { 'query': {method: 'GET', isArray:true }},
+    { update: {method: 'PATCH' }}, 
+    { stripTrailingSlashes: false }
+    );
+}).factory('RouteFactory', function($resource) {
+  return $resource('api/v2/routes/:id.json', 
+    { id:'@routes.id' }, 
     { 'query': {method: 'GET', isArray:true }},
     { update: {method: 'PATCH' }}, 
     { stripTrailingSlashes: false }
@@ -26,9 +33,14 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
     })
     .state('routes.query', {
       url: 'query',
-      templateUrl: '../static/partials/endpoint.html',
+      templateUrl: '../static/partials/list2.html',
       controller: 'fetchController',
       params: {end:null}
+    })
+    .state('routes.list', {
+      url: 'list',
+      templateUrl: '../static/partials/list2.html',
+      controller: 'listController'
     })
 });
 
@@ -54,12 +66,38 @@ angular.module('myApp.Controllers',[])
             $scope.appForm.data[keys[k]]=null
         }      
         endpoint = $httpParamSerializerJQLike(nonz);
-        $state.go('routes.query',{end:endpoint});
+        $state.go('routes.query',{end:endpoint}, {reload:'routes.query'});
     }
   };
 }])
 .controller('fetchController',['$scope','$stateParams', 'queryFactory',
   function($scope,$stateParams, queryFactory){
     $scope.params = $stateParams;
+    queryFactory.get({endpoint:$stateParams.end},
+    function(data){
+      $scope.routes = [];
+      angular.forEach(data.data, function(object){
+        this.route = {};
+        this.route.id = object.id;
+        this.route.Name = object.attributes.name;
+        this.route.Length = object.attributes.length_in_meters;
+        this.route.Popularity = object.attributes.popularity;
+        this.push(this.route);
+      }, $scope.routes);
+    });
   }
-]);
+]).controller('listController', function($scope, RouteFactory) {
+  RouteFactory.get(function(data){
+    //$scope.routes = data.data;
+    $scope.routes = [];
+    angular.forEach(data.data, function(object){
+      this.route = {};
+      this.route['id'] = object.id;
+      this.route['Name'] = object.attributes.name;
+      this.route['Length'] = object.attributes.length_in_meters;
+      this.route['Popularity'] = object.attributes.popularity;
+      console.log(this.route)
+      this.push(this.route);
+    }, $scope.routes);
+  });
+});
