@@ -87,7 +87,7 @@ class queryRoutes(Resource):
         params = {}
         for x in custom_input:
             params[x.split('=')[0]] = x.split('=')[1]
-        invalids = [x for x in params.keys() if x not in set(['dist_max','dist_min','elev_max','elev_min','type','sub_type'])]
+        invalids = [x for x in params.keys() if x not in set(['dist_max','dist_min','elev_max','elev_min','route_type','route_subtype'])]
         if not invalids:    
             q = Routes.query
             if 'dist_max' in params.keys():
@@ -97,11 +97,11 @@ class queryRoutes(Resource):
             if 'elev_max' in params.keys():
                 q = q.filter(Routes.elevation_gain_in_meters<=float(params['elev_max']))
             if 'elev_min' in params.keys():
-                q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_max']))
+                q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_min']))
             if 'type' in params.keys():
-                q = q.filter(Routes.route_type==int(params['type']))
+                q = q.filter(Routes.route_type==int(params['route_type']))
             if 'sub_type' in params.keys():
-                q = q.filter(Routes.sub_type==int(params['sub_type']))
+                q = q.filter(Routes.sub_type==int(params['route_subtype']))
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
             results_query = q.limit(20)

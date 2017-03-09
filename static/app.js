@@ -81,7 +81,8 @@ angular.module('myApp.Controllers',[])
         this.route.id = object.id;
         this.route.Name = object.attributes.name;
         this.route.Length = object.attributes.length_in_meters;
-        this.route.Popularity = object.attributes.popularity;
+        this.route.Elevation = object.attributes.elevation_gain_in_meters;
+        this.route.Type = object.attributes.route_type;
         this.push(this.route);
       }, $scope.routes);
     });
