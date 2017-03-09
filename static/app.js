@@ -1,19 +1,15 @@
-//Initialize an Angularjs Application
-var app =angular.module('myApp', ['ui.router','ngResource', 'myApp.controllers', 'myApp.services', 'toaster','ui.grid']);
- 
-
-
+// Initialize AngularJS app and inject dependencies
+var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers']);
 
 // Create a Route Resource Object using the resource service
-angular.module('myApp.services', ['ngResource']).factory('RouteFactory', function($resource) {
-  return $resource('api/v1/routes/:id.json', 
-    { id:'@routes.id' }, 
+angular.module('myApp.Services', ['ngResource']).factory('queryFactory', function($resource) {
+  return $resource('api/v2/routes/:endpoint.json', 
+    { endpoint:'@endpoint' }, 
     { 'query': {method: 'GET', isArray:true }},
     { update: {method: 'PATCH' }}, 
     { stripTrailingSlashes: false }
     );
 });
- 
 
 
 
@@ -22,47 +18,48 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise("/");
   
-    $stateProvider
-      .state('routes', {       
-        abstract: true,
-        url: '/',
-        title: 'Routes',
-        template: '<div ui-view></div>'
+  $stateProvider
+    .state('routes', {       
+      url: '/',
+      templateUrl: '/static/partials/form.html',
+      controller: 'formController'
     })
-      .state('routes.list', {
-        url: 'list',
-        templateUrl: '../static/partials/list2.html',
-        controller: 'RouteListController',      
- 
- 
-  })
+    .state('routes.query', {
+      url: 'query',
+      templateUrl: '../static/partials/endpoint.html',
+      controller: 'fetchController',
+      params: {end:null}
+    })
 });
- 
 
 
-// Define CRUD controllers to make the API calls using the RouteFactory resource we defined earlier
-angular.module('myApp.controllers', []).controller('RouteListController', function($scope, RouteFactory, toaster) {
-  RouteFactory.get(function(data){
-    $scope.routes = [];
-    angular.forEach(data.data, function(object){
-      this.route = {}
-      this.route['id'] = object.id;
-      this.route['Name'] = object.attributes.name;
-      this.route['Length'] = object.attributes.length_in_meters;
-      this.route['Popularity'] = object.attributes.popularity;
-      this.push(this.route);
-    }, $scope.routes);
-  },
-
-/*      $scope.routes = data.data},*/
-
-  function(error){
-    toaster.pop({
-      type: 'error',
-      title: 'Error',
-      body: error,
-      showCloseButton: true,
-      timeout: 0
-    });
-  });
-});
+// Define CRUD controllers to receive user input and to make the API calls using the RouteFactory resource we defined earlier
+angular.module('myApp.Controllers',[])
+.controller('formController',['$state', '$scope', '$http', '$httpParamSerializerJQLike', 
+  function($state,$scope,$http,$httpParamSerializerJQLike){
+    $scope.appForm = {
+      data: {dist_max:null,
+             dist_min:null,
+             elev_max:null,
+             elev_min:null,
+             route_type:null,
+             route_subtype:null
+      },
+      submit: function(){
+        nonz = {};
+        keys = Object.keys($scope.appForm.data)
+        for (var k in Object.keys($scope.appForm.data)){
+          if ($scope.appForm.data[keys[k]]){
+            nonz[keys[k]]=$scope.appForm.data[keys[k]];}
+            $scope.appForm.data[keys[k]]=null
+        }      
+        endpoint = $httpParamSerializerJQLike(nonz);
+        $state.go('routes.query',{end:endpoint});
+    }
+  };
+}])
+.controller('fetchController',['$scope','$stateParams', 'queryFactory',
+  function($scope,$stateParams, queryFactory){
+    $scope.params = $stateParams;
+  }
+]);

@@ -8,9 +8,9 @@ from marshmallow import validate, ValidationError
 import os, json
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
 
@@ -79,16 +79,55 @@ class CreateListRoutes(Resource):
         #return results['data']
         return results
 
+class queryRoutes(Resource):
+
+    def get(self, custom_input):
+        custom_input = custom_input.split('&')
+        params = {}
+        for x in custom_input:
+            params[x.split('=')[0]] = x.split('=')[1]
+        invalids = [x for x in params.keys() if x not in set(['dist_max','dist_min','elev_max','elev_min','type','sub_type'])]
+        if not invalids:    
+            q = Routes.query
+            if 'dist_max' in params.keys():
+                q = q.filter(Routes.length_in_meters<=float(params['dist_max']))
+            if 'dist_min' in params.keys():
+                q = q.filter(Routes.length_in_meters>=float(params['dist_min']))
+            if 'elev_max' in params.keys():
+                q = q.filter(Routes.elevation_gain_in_meters<=float(params['elev_max']))
+            if 'elev_min' in params.keys():
+                q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_max']))
+            if 'type' in params.keys():
+                q = q.filter(Routes.route_type==int(params['type']))
+            if 'sub_type' in params.keys():
+                q = q.filter(Routes.sub_type==int(params['sub_type']))
+            # make a dict with vars as keys and these junks as values
+            # for var in params q=q.filter(blah)
+            results = q.all()
+            if results != None:
+                results = schema.dump(q.all(), many=True).data
+
+            return results
+        else: 
+            return 'You have specified the following invalid search parameters: {}.'.format(', '.join(invalids))
+
+
 
 # Map classes to API enspoints
 api.add_resource(CreateListRoutes, '.json')
-app.register_blueprint(api_v1, url_prefix='/api/v1/routes')
+api.add_resource(queryRoutes, '/<custom_input>', endpoint='api/v2/routes/query')
+app.register_blueprint(api_v1, url_prefix='/api/v2/routes')
 
 
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
-    return render_template('index.html')
+    if request.method == 'GET':
+        return render_template('index.html')
+    else:
+        #true = [x for x in request.form.keys() if request.form[x]!=None]
+        api_caller = queryRoutes()
+        return '&'.join(['{}={}'.format(x,request.format[x]) for x in request.form.keys() if request.form[x]!=None])
 
 @app.route('/test')
 def test():
@@ -104,4 +143,4 @@ def show_all():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(host='0.0.0.0', port=port, debug=True)
