@@ -55,7 +55,10 @@ angular.module('myApp.Controllers',[])
              elev_max:null,
              elev_min:null,
              route_type:null,
-             route_subtype:null
+             route_subtype:null,
+             loop:null,
+             start_loc:null,
+             end_loc:null
       },
       submit: function(){
         nonz = {};
