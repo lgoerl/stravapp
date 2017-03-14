@@ -19,6 +19,17 @@
 	  </select><br>
 	<input type='reset'/>
 	<input type='submit'/><br>
+
+	<!-- advanced options -->
+	<input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
+    <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">location options<br />
+    <div class="check-element animate-show-hide" ng-show="checked">
+
+        Search for routes starting near a location:<br>
+        <input type="text" placeholder="street address" ng-model="appForm.data.start_loc"><br>
+
+    </div>
+
 </form>
 <!--<button ui-sref="routes.list">Query</button>-->
 <div ui-view=''></div>
