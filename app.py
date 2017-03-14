@@ -4,8 +4,9 @@ from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 from marshmallow import validate, ValidationError
-import os, json
+import os, json, requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -80,12 +81,21 @@ class CreateListRoutes(Resource):
 
 class queryRoutes(Resource):
 
+    def address2latlong(self, address):
+        geoparams = { 'format'     :'json', 
+                   'addressdetails': 1, 
+                   'q'             : address}
+        tempjson = requests.get('http://nominatim.openstreetmap.org/search', params=geoparams).json()[0]
+        coords = (float(tempjson['lat']),float(tempjson['lon']))
+        return coords
+
+
     def get(self, custom_input):
         custom_input = custom_input.split('&')
         params = {}
         for x in custom_input:
             params[x.split('=')[0]] = x.split('=')[1]
-        invalids = [x for x in params.keys() if x not in set(['dist_max','dist_min','elev_max','elev_min','route_type','route_subtype'])]
+        invalids = [x for x in params.keys() if x not in set(['loop', 'start_loc', 'end_loc', 'dist_max','dist_min','elev_max','elev_min','route_type','route_subtype'])]
         if not invalids:    
             q = Routes.query
             if 'dist_max' in params.keys():
@@ -102,6 +112,34 @@ class queryRoutes(Resource):
                 q = q.filter(Routes.sub_type==int(params['route_subtype']))
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
+            if 'start_loc' in params.keys():
+                try:
+                    search_str = ' '.join(params['start_loc'].split('+'))
+                    temp = self.address2latlong(search_str)
+                    start = {'lat_lower':temp[0]-.003, 'lat_upper':temp[0]+.003, 'lon_lower':temp[1]-.003, 'lon_upper':temp[1]+.003}
+                    q = q.filter(Routes.start_lon<=start['lon_upper'])\
+                    .filter(Routes.start_lon>=start['lon_lower'])\
+                    .filter(Routes.start_lat<=start['lat_upper'])\
+                    .filter(Routes.start_lat>=start['lat_lower'])
+                except:
+                    #figure out how to throw error
+                    pass
+            if 'end_loc' in params.keys():
+                try:
+                    search_str = ' '.join(params['end_loc'].split('+'))
+                    temp = self.address2latlong(search_str)
+                    end = {'lat_lower':temp[0]-.003, 'lat_upper':temp[0]+.003, 'lon_lower':temp[1]-.003, 'lon_upper':temp[1]+.003}
+                    q = q.filter(Routes.end_lon<=end['lon_upper'])\
+                    .filter(Routes.end_lon>=end['lon_lower'])\
+                    .filter(Routes.end_lat<=end['lat_upper'])\
+                    .filter(Routes.end_lat>=end['lat_lower'])
+                except:
+                    #figure out how to throw error
+                    pass
+            if 'loop' in params.keys():
+                q = q.filter(func.abs(Routes.start_lat-Routes.end_lat)+func.abs(Routes.start_lon-Routes.end_lon)<=.003)
+
+
             results_query = q.limit(20)
             results = schema.dump(results_query, many=True).data
             return results
