@@ -76,6 +76,17 @@ angular.module('myApp.Controllers',[])
 .controller('fetchController',['$scope','$stateParams', 'queryFactory',
   function($scope,$stateParams, queryFactory){
     $scope.params = $stateParams;
+    $scope.gridOptions = {
+      enableSorting:true,
+      columnDefs:[
+        {name: 'id', visible:false},
+        {name: 'Name', enableSorting:false, cellTemplate:'<a href="https://strava.com/routes/{{row.entity.id}}">{{COL_FIELD}}</a>'},
+        {name: 'Length', enableSorting:true},
+        {name: 'Elevation', enableSorting:true},
+        {name: 'Type', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Cycling" : "Running"}}</div>'}
+        ],
+        data:[]
+    };
     queryFactory.get({endpoint:$stateParams.end},
     function(data){
       $scope.routes = [];
@@ -87,7 +98,7 @@ angular.module('myApp.Controllers',[])
         this.route.Elevation = object.attributes.elevation_gain_in_meters;
         this.route.Type = object.attributes.route_type;
         this.push(this.route);
-      }, $scope.routes);
+      }, $scope.gridOptions.data);
     });
   }
 ]).controller('listController', function($scope, RouteFactory) {
