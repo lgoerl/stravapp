@@ -1,5 +1,5 @@
 // Initialize AngularJS app and inject dependencies
-var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers', 'ui.grid']);
+var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers', 'ui.grid', 'toaster']);
 
 // Create a Route Resource Object using the resource service
 angular.module('myApp.Services', ['ngResource']).factory('queryFactory', function($resource) {
@@ -103,5 +103,14 @@ angular.module('myApp.Controllers',[])
       console.log(this.route)
       this.push(this.route);
     }, $scope.routes);
+  },
+  function(error){
+    toaster.pop({
+      type: 'error',
+      title: 'Error',
+      body: error,
+      showCloseButton: true,
+      timeout: 0
+    });
   });
 });

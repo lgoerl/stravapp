@@ -46,15 +46,16 @@ class RouteSchema(Schema):
     popularity = fields.Float(required=True)
 
     # self links
-    def get_top_level_links(self, data, many):
-        if many:
-            self_link = "/routes/"
+    def get_top_level_links(self, data, custom_endpoint):
+        '''        if many:
+            self_link = "/routes/fart"
         else:
-            self_link = "/routes/{}".format(data['id'])
+            self_link = "/routes/{}".format(data['id'])'''
+        self_link = custom_endpoint
         return {'self': self_link}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
-        type_ = 'routes'
+        type_ = 'route'
 
 
 
@@ -98,8 +99,12 @@ class queryRoutes(Resource):
         invalids = [x for x in params.keys() if x not in set(['loop', 'start_loc', 'end_loc', 'dist_max','dist_min','elev_max','elev_min','route_type','route_subtype'])]
         if not invalids:    
             q = Routes.query
-            if 'dist_max' in params.keys():
-                q = q.filter(Routes.length_in_meters<=float(params['dist_max']))
+            try:
+                if 'dist_max' in params.keys():
+                    q = q.filter(Routes.length_in_meters<=float(params['dist_max']))
+            except ValueError as err: 
+                resp = jsonify({"error":err.message, "status_code":403})
+                return resp
             if 'dist_min' in params.keys():
                 q = q.filter(Routes.length_in_meters>=float(params['dist_min']))
             if 'elev_max' in params.keys():
@@ -141,7 +146,7 @@ class queryRoutes(Resource):
 
 
             results_query = q.limit(20)
-            results = schema.dump(results_query, many=True).data
+            results = schema.dump(results_query, '&'.join(custom_input))
             return results
         else: 
             return 'You have specified the following invalid search parameters: {}.'.format(', '.join(invalids))
