@@ -66,7 +66,7 @@ angular.module('myApp.Controllers',[])
         for (var k in Object.keys($scope.appForm.data)){
           if ($scope.appForm.data[keys[k]]){
             nonz[keys[k]]=$scope.appForm.data[keys[k]];}
-            $scope.appForm.data[keys[k]]=null
+            //$scope.appForm.data[keys[k]]=null
         }      
         endpoint = $httpParamSerializerJQLike(nonz);
         $state.go('routes.query',{end:endpoint}, {reload:'routes.query'});
@@ -83,7 +83,8 @@ angular.module('myApp.Controllers',[])
         {name: 'Name', enableSorting:false, cellTemplate:'<a href="https://strava.com/routes/{{row.entity.id}}">{{COL_FIELD}}</a>'},
         {name: 'Length', enableSorting:true},
         {name: 'Elevation', enableSorting:true},
-        {name: 'Type', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Cycling" : "Running"}}</div>'}
+        {name: 'Type', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Cycling" : "Running"}}</div>'},
+        {name: 'Subtype', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Road" : (COL_FIELD == 2 ? "Mountain" : (COL_FIELD == 3 ? "Cyclocross" : "Trail Run"))}}</div>'}
         ],
         data:[]
     };
@@ -97,6 +98,7 @@ angular.module('myApp.Controllers',[])
         this.route.Length = object.attributes.length_in_meters;
         this.route.Elevation = object.attributes.elevation_gain_in_meters;
         this.route.Type = object.attributes.route_type;
+        this.route.Subtype = object.attributes.sub_type;
         this.push(this.route);
       }, $scope.gridOptions.data);
     });

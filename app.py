@@ -111,9 +111,9 @@ class queryRoutes(Resource):
                 q = q.filter(Routes.elevation_gain_in_meters<=float(params['elev_max']))
             if 'elev_min' in params.keys():
                 q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_min']))
-            if 'type' in params.keys():
+            if 'route_type' in params.keys():
                 q = q.filter(Routes.route_type==int(params['route_type']))
-            if 'sub_type' in params.keys():
+            if 'route_subtype' in params.keys():
                 q = q.filter(Routes.sub_type==int(params['route_subtype']))
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
