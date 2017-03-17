@@ -1,11 +1,11 @@
 <form ng-submit="appForm.submit()">
   Distance (in meters) the route covers:<br>
-	  <input type="number" placeholder="max dist" ng-model="appForm.data.dist_max">
-	  <input type="number" placeholder="min dist" ng-model="appForm.data.dist_min"><br><br>
+    <input type="number" placeholder="min dist" ng-model="appForm.data.dist_min">
+	  <input type="number" placeholder="max dist" ng-model="appForm.data.dist_max"><br><br>
 	Total elevation change (in meters) along the route:<br>
-	  <input type="number" placeholder="max elev" ng-model="appForm.data.elev_max">
-	  <input type="number" placeholder="min elev" ng-model="appForm.data.elev_min"><br><br>
-	Route type:<br>  
+    <input type="number" placeholder="min elev" ng-model="appForm.data.elev_min">
+	  <input type="number" placeholder="max elev" ng-model="appForm.data.elev_max"><br><br>
+	Route type:<br>
 	  <select ng-model='appForm.data.route_type'>
 	    <option value='1'>Cycling</option>
 	    <option value='2'>Running</option>
@@ -24,7 +24,7 @@
 		  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
       <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">advanced options<br />
       <div class="check-element animate-show-hide" ng-show="checked">
-        
+
         <style>
           /* Tooltip container */
           .tooltip {
@@ -32,7 +32,7 @@
               display: inline-block;
               border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
           }
-          
+
           /* Tooltip text */
           .tooltip .tooltiptext {
               visibility: hidden;
@@ -48,7 +48,7 @@
               left: 120%;
               line-height:70%;
           }
-                    
+
                     .tooltip .tooltiptext::after {
               content: "";
               position: absolute;
@@ -59,7 +59,7 @@
               border-style: solid;
               border-color: transparent black transparent transparent;
           }
-          
+
           /* Show the tooltip text when you mouse over the tooltip container */
           .tooltip:hover .tooltiptext {
               visibility: visible;
@@ -67,15 +67,15 @@
 
           .resizedTextbox {width: 300px; height: 20px}
         </style>
-        
-        Search for routes starting near a 
+
+        Search for routes starting near a
         <div class='tooltip'>location
           <span class="tooltiptext"><font size=1>Your search will be more accurate if you use commas to separate fields.</font></span>
         </div>:<br>
-        
+
         <input type='radio' ng-model='selector' value=0 checked>Starting location<br>
         <input type='radio' ng-model='selector' value=1>Ending location<br>
-        
+
         <input ng-show="selector==0" type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.start_loc" class='resizedTextbox'>
         <input ng-show="selector==1" type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
       </div>
