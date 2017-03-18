@@ -21,7 +21,7 @@
 	<input type='submit'/><br>
 
 	<!-- advanced options -->
-		  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
+	  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
       <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">advanced options<br />
       <div class="check-element animate-show-hide" ng-show="checked">
         
@@ -30,7 +30,7 @@
           .tooltip {
               position: relative;
               display: inline-block;
-              border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+              border-bottom: 1px dotted black;
           }
           
           /* Tooltip text */
@@ -49,11 +49,11 @@
               line-height:70%;
           }
                     
-                    .tooltip .tooltiptext::after {
+          .tooltip .tooltiptext::after {
               content: "";
               position: absolute;
               top: 40%;
-              right: 100%; /* To the left of the tooltip */
+              right: 100%; 
               margin-top: -5px;
               border-width: 5px;
               border-style: solid;
@@ -64,20 +64,16 @@
           .tooltip:hover .tooltiptext {
               visibility: visible;
           }
-
           .resizedTextbox {width: 300px; height: 20px}
         </style>
         
-        Search for routes starting near a 
-        <div class='tooltip'>location
-          <span class="tooltiptext"><font size=1>Your search will be more accurate if you use commas to separate fields.</font></span>
-        </div>:<br>
+        Search for routes starting near a <div class="tooltip"><span class='tooltiptext'> location:</span></div><br>
         
-        <input type='radio' ng-model='selector' value=0 checked>Starting location<br>
-        <input type='radio' ng-model='selector' value=1>Ending location<br>
-        
-        <input ng-show="selector==0" type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.start_loc" class='resizedTextbox'>
-        <input ng-show="selector==1" type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
+        Starting location<br>
+        <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.start_loc" class='resizedTextbox'><br>
+        Ending location<br>
+        <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
+
       </div>
 
 </form>
