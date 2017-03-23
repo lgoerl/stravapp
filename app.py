@@ -102,19 +102,19 @@ class queryRoutes(Resource):
             try:
                 if 'dist_max' in params.keys():
                     q = q.filter(Routes.length_in_meters<=float(params['dist_max']))
+                if 'dist_min' in params.keys():
+                    q = q.filter(Routes.length_in_meters>=float(params['dist_min']))
+                if 'elev_max' in params.keys():
+                    q = q.filter(Routes.elevation_gain_in_meters<=float(params['elev_max']))
+                if 'elev_min' in params.keys():
+                    q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_min']))
+                if 'route_type' in params.keys():
+                    q = q.filter(Routes.route_type==int(params['route_type']))
+                if 'route_subtype' in params.keys():
+                    q = q.filter(Routes.sub_type==int(params['route_subtype']))
             except ValueError as err: 
                 resp = jsonify({"error":err.message, "status_code":403})
                 return resp
-            if 'dist_min' in params.keys():
-                q = q.filter(Routes.length_in_meters>=float(params['dist_min']))
-            if 'elev_max' in params.keys():
-                q = q.filter(Routes.elevation_gain_in_meters<=float(params['elev_max']))
-            if 'elev_min' in params.keys():
-                q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_min']))
-            if 'route_type' in params.keys():
-                q = q.filter(Routes.route_type==int(params['route_type']))
-            if 'route_subtype' in params.keys():
-                q = q.filter(Routes.sub_type==int(params['route_subtype']))
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
             if 'start_loc' in params.keys():
@@ -126,9 +126,9 @@ class queryRoutes(Resource):
                     .filter(Routes.start_lon>=start['lon_lower'])\
                     .filter(Routes.start_lat<=start['lat_upper'])\
                     .filter(Routes.start_lat>=start['lat_lower'])
-                except:
-                    #figure out how to throw error
-                    pass
+                except IndexError as err:
+                    resp = jsonify({"data":[],"error":"Your search near the specified location returned no results.", "status_code":204})
+                    return resp
             if 'end_loc' in params.keys():
                 try:
                     search_str = ' '.join(params['end_loc'].split('+'))
@@ -138,18 +138,24 @@ class queryRoutes(Resource):
                     .filter(Routes.end_lon>=end['lon_lower'])\
                     .filter(Routes.end_lat<=end['lat_upper'])\
                     .filter(Routes.end_lat>=end['lat_lower'])
-                except:
-                    #figure out how to throw error
-                    pass
+                except IndexError as err:
+                    resp = jsonify({"error":"Your search near the specified location returned no results.", "status_code":204})
+                    return resp                                                  
+                    '''raise IndexError('Your search near the specified location returned no results.','204')'''
             if 'loop' in params.keys():
                 q = q.filter(func.abs(Routes.start_lat-Routes.end_lat)+func.abs(Routes.start_lon-Routes.end_lon)<=.003)
 
 
             results_query = q.limit(20)
             results = schema.dump(results_query, '&'.join(custom_input))
-            return results
+            if results.data: 
+                return results
+            else: 
+                resp = jsonify({"error":"Your search returned no results. Try a more general search.", "status_code":403})
+                return resp
         else: 
-            return 'You have specified the following invalid search parameters: {}.'.format(', '.join(invalids))
+            resp = jsonify({"error":"You have specified the following invalid search parameters: {}.".format(', '.join(invalids)), "status_code":204})
+            return resp
 
 
 

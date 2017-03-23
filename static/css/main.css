@@ -1,4 +1,48 @@
+/* ui-grid */
 .myGrid {
     width: 500px;
     height: 250px;
   }
+
+  /* custom_Tooltip container */
+  .custom_tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+
+  /* custom_Tooltip text */
+  .custom_tooltip .custom_tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      top: -5px;
+      left: 120%;
+      line-height: 70%;
+  }
+
+  .custom_tooltip .custom_tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 40%;
+      right: 100%; 
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent black transparent transparent;
+      font-family: monospace;
+  }
+
+  /* Show the custom_tooltip text when you mouse over the custom_tooltip container */
+  .custom_tooltip:hover .custom_tooltiptext {
+      visibility: visible;
+  }
+
+  /* Resized textbox for location query inputs */
+  .resizedTextbox {width: 300px; height: 20px}

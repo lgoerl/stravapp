@@ -73,8 +73,8 @@ angular.module('myApp.Controllers',[])
     }
   };
 }])
-.controller('fetchController',['$scope','$stateParams', 'queryFactory',
-  function($scope,$stateParams, queryFactory){
+.controller('fetchController',['$scope','$stateParams', 'queryFactory', 'toaster',
+  function($scope,$stateParams, queryFactory, toaster){
     $scope.params = $stateParams;
     $scope.gridOptions = {
       enableSorting:true,
@@ -101,6 +101,13 @@ angular.module('myApp.Controllers',[])
         this.route.Subtype = object.attributes.sub_type;
         this.push(this.route);
       }, $scope.gridOptions.data);
+      console.log(data.error)
+      toaster.pop({
+        type:'error',
+        title:'Error',
+        body:data.error,
+        timeout:3000
+      });
     });
   }
 ]).controller('listController', function($scope, RouteFactory) {
@@ -116,14 +123,5 @@ angular.module('myApp.Controllers',[])
       console.log(this.route)
       this.push(this.route);
     }, $scope.routes);
-  },
-  function(error){
-    toaster.pop({
-      type: 'error',
-      title: 'Error',
-      body: error,
-      showCloseButton: true,
-      timeout: 0
-    });
   });
 });

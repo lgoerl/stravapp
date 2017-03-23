@@ -20,45 +20,14 @@
 	    <option value='3'>Cyclocross</option>
 	    <option value='4'>Trail Run</option>
 	  </select><br>
-	<input type='reset'/>
-	<input type='submit'/><br>
+
 
 	<!-- advanced options -->
 	  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
       <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">advanced options<br />
       <div class="check-element animate-show-hide" ng-show="checked">
 
-      <style>
-      /* custom_Tooltip container */
-      .custom_tooltip {
-          position: relative;
-          display: inline-block;
-          border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-      }
 
-      /* custom_Tooltip text */
-      .custom_tooltip .custom_tooltiptext {
-          visibility: hidden;
-          width: 120px;
-          background-color: black;
-          color: #fff;
-          text-align: center;
-          padding: 5px 0;
-          border-radius: 6px;
-
-          /* Position the custom_tooltip text - see examples below! */
-          position: absolute;
-          z-index: 1;
-      }
-
-      /* Show the custom_tooltip text when you mouse over the custom_tooltip container */
-      .custom_tooltip:hover .custom_tooltiptext {
-          visibility: visible;
-      }
-
-      /* Resized textbox */
-      .resizedTextbox {width: 300px; height: 20px}
-      </style>
 
         Search for routes starting near a
         <div class='custom_tooltip'>location
@@ -71,7 +40,11 @@
         Ending location:<br>
         <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
       </div>
+  <input type='reset'/>
+  <input type='submit'/><br>
 
 </form>
 <!--<button ui-sref="routes.list">Query</button>-->
+<toaster-container></toaster-container>
+
 <div ui-view=''></div>
