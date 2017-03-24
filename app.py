@@ -127,7 +127,7 @@ class queryRoutes(Resource):
                     .filter(Routes.start_lat<=start['lat_upper'])\
                     .filter(Routes.start_lat>=start['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({"data":[],"error":"Your search near the specified location returned no results.", "status_code":204})
+                    resp = jsonify({"data":[],"error":"No matching location was found.", "status_code":404})
                     return resp
             if 'end_loc' in params.keys():
                 try:
@@ -139,7 +139,7 @@ class queryRoutes(Resource):
                     .filter(Routes.end_lat<=end['lat_upper'])\
                     .filter(Routes.end_lat>=end['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({'error':"Your search near the specified location returned no results.", "status_code":204})
+                    resp = jsonify({'error':"No matching location was found.", "status_code":404})
                     return resp                                                  
                     '''raise IndexError('Your search near the specified location returned no results.','204')'''
             if 'loop' in params.keys():

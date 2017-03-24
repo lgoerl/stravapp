@@ -1,7 +1,7 @@
 // Initialize AngularJS app and inject dependencies
 var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers', 'ui.grid', 'toaster', 'ngAria', 'ngAnimate', 'ngMaterial']);
 
-// Create a Route Resource Object using the resource service
+// Create a Resource Object using the resource service to call the API
 angular.module('myApp.Services', ['ngResource']).factory('queryFactory', function($resource) {
   return $resource('api/v2/routes/:endpoint.json', 
     { endpoint:'@endpoint' }, 
@@ -75,12 +75,13 @@ angular.module('myApp.Controllers',[])
 }])
 .controller('fetchController',['$scope','$stateParams', 'queryFactory', 'toaster',
   function($scope,$stateParams, queryFactory, toaster){
+    // get query parameters and set options for ui-grid
     $scope.params = $stateParams;
     $scope.gridOptions = {
       enableSorting:true,
       columnDefs:[
         {name: 'id', visible:false},
-        {name: 'Name', enableSorting:false, cellTemplate:'<a href="https://strava.com/routes/{{row.entity.id}}">{{COL_FIELD}}</a>'},
+        {name: 'Name', enableSorting:false, cellTemplate:'<a href="https://strava.com/routes/{{row.entity.id}}" target="_blank">{{COL_FIELD}}</a>'},
         {name: 'Length', enableSorting:true},
         {name: 'Elevation', enableSorting:true},
         {name: 'Type', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Cycling" : "Running"}}</div>'},
@@ -88,27 +89,45 @@ angular.module('myApp.Controllers',[])
         ],
         data:[]
     };
+    // call the API with factory resource, parse errors and format data
     queryFactory.get({endpoint:$stateParams.end},
     function(data){
       $scope.routes = [];
-      angular.forEach(data.data, function(object){
-        this.route = {};
-        this.route.id = object.id;
-        this.route.Name = object.attributes.name;
-        this.route.Length = object.attributes.length_in_meters;
-        this.route.Elevation = object.attributes.elevation_gain_in_meters;
-        this.route.Type = object.attributes.route_type;
-        this.route.Subtype = object.attributes.sub_type;
-        this.push(this.route);
-      }, $scope.gridOptions.data);
+      // if query encountered an error finding the location or with search terms from dynamic endpoint query
       if (data.error){
-            console.log(data.error)
-            toaster.pop({
-              type:'error',
-              title:'Error',
-              body:data.error,
-              timeout:3000
-            });}
+        console.log(data.error)
+        toaster.pop({
+          type:'error',
+          title:'Error '+data.status_code,
+          body:data.error,
+          timeout:3000
+        });
+      }
+      else {
+        // if query  failed to find any matching routes
+        if (data.data.length == 0) {
+          toaster.pop({
+            type:'warning',
+            title:'Error 204',
+            body:'The specified search returned no results. Try a different search.',
+            timeout:3000
+          });
+        }
+        // if query successfully found routes
+        else {
+          angular.forEach(data.data, function(object){
+            this.route = {};
+            this.route.id = object.id;
+            this.route.Name = object.attributes.name;
+            this.route.Length = object.attributes.length_in_meters;
+            this.route.Elevation = object.attributes.elevation_gain_in_meters;
+            this.route.Type = object.attributes.route_type;
+            this.route.Subtype = object.attributes.sub_type;
+            this.push(this.route);
+          }, 
+          $scope.gridOptions.data);
+        }
+      }
     });
   }
 ]).controller('listController', function($scope, RouteFactory) {
