@@ -6,7 +6,7 @@ from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 from marshmallow import validate, ValidationError
-import os, json, requests
+import os, json, requests, logging, sys
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -186,6 +186,9 @@ def show_all():
     return render_template('show_all.html', routes = Routes.query.limit(100) )
 
 
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
