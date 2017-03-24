@@ -26,14 +26,24 @@
 <div id="main">
  
 <div>
-  	<!-- ui-view tells $state where to place your templates. here the routes.list has template list.html -->
-  	<div ui-view=""></div>
+	<md-content>
+		<md-tabs md-dynamic-height md-boarder-bottom>
+			<md-tab label='Home'>
+				<md-content class='md-padding'>
+					<h1 class='md-display-2'>Find a route</h1>
+  						<div ui-view=""></div>
+  				</md-content>
+  			</md-tab>
+  			<md-tab label='About'>
+  				<md-content class='md-padding'>
+  					<h1 class='md-display-2'>About Us</h1>
+  						<p>Something about us</p>
+  				</md-content>
+  			</md-tab>
+  		</md-tabs>
+  	</md-content>
 </div>
 
    
 </div>
 </html>
-
-
-
-
