@@ -46,13 +46,13 @@ class RouteSchema(Schema):
     popularity = fields.Float(required=True)
 
     # self links
-    def get_top_level_links(self, data, custom_endpoint):
+    def get_top_level_links(self, data, many):
         '''if many:
             self_link = "/routes/fart"
         else:
             self_link = "/routes/{}".format(data['id'])
         self_link = custom_endpoint'''
-        return {'error': False, 'self': "/api/v2/routes.json"}
+        return {'self': "/api/v2/routes.json"}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
         type_ = 'route'
@@ -73,13 +73,13 @@ schema = RouteSchema(strict=True)
 
  
 # Create CRUD classes using the Flask-RESTful Resource class
-class CreateListRoutes(Resource):
+'''class CreateListRoutes(Resource):
     
     def get(self):
         routes_query = Routes.query.limit(5)
         results = schema.dump(routes_query, many=True).data
         #return results['data']
-        return results
+        return results'''
 
 class queryRoutes(Resource):
 
@@ -147,7 +147,7 @@ class queryRoutes(Resource):
 
 
             results_query = q.limit(20)
-            results = schema.dump(results_query, '&'.join(custom_input))
+            results = schema.dump(results_query, many=True)
             if results.data: 
                 return results
             else: 
@@ -160,7 +160,7 @@ class queryRoutes(Resource):
 
 
 # Map classes to API enspoints
-api.add_resource(CreateListRoutes, '.json')
+'''api.add_resource(CreateListRoutes, '.json')'''
 api.add_resource(queryRoutes, '/<custom_input>.json', endpoint='api/v2/routes/query')
 app.register_blueprint(api_v1, url_prefix='/api/v2/routes')
 
