@@ -47,15 +47,16 @@ class RouteSchema(Schema):
 
     # self links
     def get_top_level_links(self, data, custom_endpoint):
-        '''        if many:
+        '''if many:
             self_link = "/routes/fart"
         else:
-            self_link = "/routes/{}".format(data['id'])'''
-        self_link = custom_endpoint
-        return {'error': False}
+            self_link = "/routes/{}".format(data['id'])
+        self_link = custom_endpoint'''
+        return {'error': False, 'self': "/api/v2/routes.json"}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
         type_ = 'route'
+
 
 
 
@@ -113,7 +114,7 @@ class queryRoutes(Resource):
                 if 'route_subtype' in params.keys():
                     q = q.filter(Routes.sub_type==int(params['route_subtype']))
             except ValueError as err: 
-                resp = jsonify({"error":err.message, "status_code":403})
+                resp = jsonify({"error":err.message, "status_code":403, "links":{"error":True}})
                 return resp
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
@@ -127,7 +128,7 @@ class queryRoutes(Resource):
                     .filter(Routes.start_lat<=start['lat_upper'])\
                     .filter(Routes.start_lat>=start['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({"data":[],"error":"No matching location was found.", "status_code":404})
+                    resp = jsonify({"data":[],"error":"No matching location was found.", "status_code":404, "links":{"error":True}})
                     return resp
             if 'end_loc' in params.keys():
                 try:
@@ -139,9 +140,8 @@ class queryRoutes(Resource):
                     .filter(Routes.end_lat<=end['lat_upper'])\
                     .filter(Routes.end_lat>=end['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({'error':"No matching location was found.", "status_code":404})
+                    resp = jsonify({'error':"No matching location was found.", "status_code":404, "links":{"error":True}})
                     return resp                                                  
-                    '''raise IndexError('Your search near the specified location returned no results.','204')'''
             if 'loop' in params.keys():
                 q = q.filter(func.abs(Routes.start_lat-Routes.end_lat)+func.abs(Routes.start_lon-Routes.end_lon)<=.003)
 
@@ -151,10 +151,10 @@ class queryRoutes(Resource):
             if results.data: 
                 return results
             else: 
-                resp = jsonify({"error":"Your search returned no results. Try a more general search.", "status_code":403})
+                resp = jsonify({"error":"Your search returned no results. Try a more general search.", "status_code":403, "links":{"error":True}})
                 return resp
         else: 
-            resp = jsonify({"error":"You have specified the following invalid search parameters: {}.".format(', '.join(invalids)), "status_code":204})
+            resp = jsonify({"error":"You have specified the following invalid search parameters: {}.".format(', '.join(invalids)), "status_code":204, "links":{"error":True}})
             return resp
 
 

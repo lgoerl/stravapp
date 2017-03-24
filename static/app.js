@@ -94,7 +94,7 @@ angular.module('myApp.Controllers',[])
     function(data){
       $scope.routes = [];
       // if query encountered an error finding the location or with search terms from dynamic endpoint query
-      if (data.error){
+      if (data.links.error){
         console.log(data.error)
         toaster.pop({
           type:'error',
@@ -104,6 +104,7 @@ angular.module('myApp.Controllers',[])
         });
       }
       else {
+        //console.log('fuck');
         // if query  failed to find any matching routes
         if (data.data.length == 0) {
           toaster.pop({
