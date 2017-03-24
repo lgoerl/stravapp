@@ -52,7 +52,7 @@ class RouteSchema(Schema):
         else:
             self_link = "/routes/{}".format(data['id'])'''
         self_link = custom_endpoint
-        return {'self': self_link}
+        return {'error': False}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
         type_ = 'route'
@@ -139,7 +139,7 @@ class queryRoutes(Resource):
                     .filter(Routes.end_lat<=end['lat_upper'])\
                     .filter(Routes.end_lat>=end['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({"error":"Your search near the specified location returned no results.", "status_code":204})
+                    resp = jsonify({'error':"Your search near the specified location returned no results.", "status_code":204})
                     return resp                                                  
                     '''raise IndexError('Your search near the specified location returned no results.','204')'''
             if 'loop' in params.keys():

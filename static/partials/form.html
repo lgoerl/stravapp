@@ -27,8 +27,6 @@
       <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">advanced options<br />
       <div class="check-element animate-show-hide" ng-show="checked">
 
-
-
         Search for routes starting near a
         <div class='custom_tooltip'>location
           <span class="custom_tooltiptext">Your search will be more accurate if you use commas to separate fields.</span>
@@ -45,6 +43,6 @@
 
 </form>
 <!--<button ui-sref="routes.list">Query</button>-->
-<toaster-container></toaster-container>
+<toaster-container toaster-options="{'position-class': 'toast-center', 'close-button':true}"></toaster-container>
 
 <div ui-view=''></div>

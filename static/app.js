@@ -1,5 +1,5 @@
 // Initialize AngularJS app and inject dependencies
-var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers', 'ui.grid', 'toaster']);
+var app = angular.module('myApp',['ui.router', 'ngResource', 'myApp.Services', 'myApp.Controllers', 'ui.grid', 'toaster', 'ngAria', 'ngAnimate', 'ngMaterial']);
 
 // Create a Route Resource Object using the resource service
 angular.module('myApp.Services', ['ngResource']).factory('queryFactory', function($resource) {
@@ -101,13 +101,14 @@ angular.module('myApp.Controllers',[])
         this.route.Subtype = object.attributes.sub_type;
         this.push(this.route);
       }, $scope.gridOptions.data);
-      console.log(data.error)
-      toaster.pop({
-        type:'error',
-        title:'Error',
-        body:data.error,
-        timeout:3000
-      });
+      if (data.error){
+            console.log(data.error)
+            toaster.pop({
+              type:'error',
+              title:'Error',
+              body:data.error,
+              timeout:3000
+            });}
     });
   }
 ]).controller('listController', function($scope, RouteFactory) {
