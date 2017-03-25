@@ -6,20 +6,16 @@
     <input type="number" placeholder="minimum" ng-model="appForm.data.elev_min">
 	  <input type="number" placeholder="maximum" ng-model="appForm.data.elev_max"><br><br>
 
-	Route type:<br>
-	  <select ng-model='appForm.data.route_type'>
-      <option value='null'></option>
-	    <option value='1'>Cycling</option>
-	    <option value='2'>Running</option>
-	  </select><br>
-	Route subtype:<br>
-	  <select ng-model='appForm.data.route_subtype'>
-      <option value='null'></option>
-	    <option value='1'>Road</option>
-	    <option value='2'>Mountain</option>
-	    <option value='3'>Cyclocross</option>
-	    <option value='4'>Trail Run</option>
-	  </select><br>
+	Route type:<br>  
+    <select ng-model='appForm.data.route_type'
+      ng-options='value.id as value.value for value in appForm.selection.base_type'>
+      <option value=''></option>
+    </select><br>
+  Route subtype:<br>
+    <select ng-model='appForm.data.route_subtype'
+      ng-options='value.id as value.value for value in appForm.selection.base_subtype'>
+      <option value=''></option>
+    </select><br>
 
 
 	<!-- advanced options -->
@@ -38,11 +34,10 @@
         Ending location:<br>
         <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
       </div>
-  <input type='reset'/>
+  <input type='button' value='Reset' ng-click='reset()' />
   <input type='submit'/><br>
 
 </form>
-<!--<button ui-sref="routes.list">Query</button>-->
 <toaster-container toaster-options="{'position-class': 'toast-center', 'close-button':true}"></toaster-container>
 
 <div ui-view=''></div>
