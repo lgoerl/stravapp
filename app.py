@@ -6,7 +6,7 @@ from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 from marshmallow import validate, ValidationError
-import os, json, requests
+import os, json, requests, logging, sys
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -46,16 +46,17 @@ class RouteSchema(Schema):
     popularity = fields.Float(required=True)
 
     # self links
-    def get_top_level_links(self, data, custom_endpoint):
-        '''        if many:
+    def get_top_level_links(self, data, many):
+        '''if many:
             self_link = "/routes/fart"
         else:
-            self_link = "/routes/{}".format(data['id'])'''
-        self_link = custom_endpoint
-        return {'error': False}
+            self_link = "/routes/{}".format(data['id'])
+        self_link = custom_endpoint'''
+        return {'error':False, 'self': "/api/v2/routes.json"}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
         type_ = 'route'
+
 
 
 
@@ -72,13 +73,13 @@ schema = RouteSchema(strict=True)
 
  
 # Create CRUD classes using the Flask-RESTful Resource class
-class CreateListRoutes(Resource):
+'''class CreateListRoutes(Resource):
     
     def get(self):
         routes_query = Routes.query.limit(5)
         results = schema.dump(routes_query, many=True).data
         #return results['data']
-        return results
+        return results'''
 
 class queryRoutes(Resource):
 
@@ -113,7 +114,7 @@ class queryRoutes(Resource):
                 if 'route_subtype' in params.keys():
                     q = q.filter(Routes.sub_type==int(params['route_subtype']))
             except ValueError as err: 
-                resp = jsonify({"error":err.message, "status_code":403})
+                resp = jsonify({"error":err.message, "status_code":403, "links":{"error":True}})
                 return resp
             # make a dict with vars as keys and these junks as values
             # for var in params q=q.filter(blah)
@@ -127,7 +128,7 @@ class queryRoutes(Resource):
                     .filter(Routes.start_lat<=start['lat_upper'])\
                     .filter(Routes.start_lat>=start['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({"data":[],"error":"Your search near the specified location returned no results.", "status_code":204})
+                    resp = jsonify({"data":[],"error":"No matching location was found.", "status_code":404, "links":{"error":True}})
                     return resp
             if 'end_loc' in params.keys():
                 try:
@@ -139,28 +140,27 @@ class queryRoutes(Resource):
                     .filter(Routes.end_lat<=end['lat_upper'])\
                     .filter(Routes.end_lat>=end['lat_lower'])
                 except IndexError as err:
-                    resp = jsonify({'error':"Your search near the specified location returned no results.", "status_code":204})
+                    resp = jsonify({'error':"No matching location was found.", "status_code":404, "links":{"error":True}})
                     return resp                                                  
-                    '''raise IndexError('Your search near the specified location returned no results.','204')'''
             if 'loop' in params.keys():
                 q = q.filter(func.abs(Routes.start_lat-Routes.end_lat)+func.abs(Routes.start_lon-Routes.end_lon)<=.003)
 
 
             results_query = q.limit(20)
-            results = schema.dump(results_query, '&'.join(custom_input))
+            results = schema.dump(results_query, many=True)
             if results.data: 
                 return results
             else: 
-                resp = jsonify({"error":"Your search returned no results. Try a more general search.", "status_code":403})
+                resp = jsonify({"error":"Your search returned no results. Try a more general search.", "status_code":403, "links":{"error":True}})
                 return resp
         else: 
-            resp = jsonify({"error":"You have specified the following invalid search parameters: {}.".format(', '.join(invalids)), "status_code":204})
+            resp = jsonify({"error":"You have specified the following invalid search parameters: {}.".format(', '.join(invalids)), "status_code":204, "links":{"error":True}})
             return resp
 
 
 
 # Map classes to API enspoints
-api.add_resource(CreateListRoutes, '.json')
+'''api.add_resource(CreateListRoutes, '.json')'''
 api.add_resource(queryRoutes, '/<custom_input>.json', endpoint='api/v2/routes/query')
 app.register_blueprint(api_v1, url_prefix='/api/v2/routes')
 
@@ -186,6 +186,9 @@ def show_all():
     return render_template('show_all.html', routes = Routes.query.limit(100) )
 
 
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
