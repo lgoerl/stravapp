@@ -49,8 +49,11 @@ angular.module('myApp').config(function($stateProvider, $urlRouterProvider) {
 angular.module('myApp.Controllers',[])
 .controller('formController',['$state', '$scope', '$http', '$httpParamSerializerJQLike', 
   function($state,$scope,$http,$httpParamSerializerJQLike){
+    $scope.reset = function(){
+      angular.copy($scope.appForm.cleared, $scope.appForm.data);
+    },
     $scope.appForm = {
-      data: {dist_max:null,
+      cleared: {dist_max:null,
              dist_min:null,
              elev_max:null,
              elev_min:null,
@@ -66,13 +69,17 @@ angular.module('myApp.Controllers',[])
         for (var k in Object.keys($scope.appForm.data)){
           if ($scope.appForm.data[keys[k]]){
             nonz[keys[k]]=$scope.appForm.data[keys[k]];}
-            //$scope.appForm.data[keys[k]]=null
         }      
         endpoint = $httpParamSerializerJQLike(nonz);
         $state.go('routes.query',{end:endpoint}, {reload:'routes.query'});
-    }
-  };
-}])
+      },
+      selection: {
+        base_type: [{id:1, value:'Cycling'},{id:2, value:'Running'}],
+        base_subtype: [{id:1, value:'Road'},{id:2, value:'Mountain'},{id:3, value:'Cyclocross'},{id:4, value:'Trail Run'}]
+      }
+    };
+  }
+])
 .controller('fetchController',['$scope','$stateParams', 'queryFactory', 'toaster',
   function($scope,$stateParams, queryFactory, toaster){
     // get query parameters and set options for ui-grid
@@ -104,7 +111,6 @@ angular.module('myApp.Controllers',[])
         });
       }
       else {
-        //console.log('fuck');
         // if query  failed to find any matching routes
         if (data.data.length == 0) {
           toaster.pop({
@@ -131,18 +137,4 @@ angular.module('myApp.Controllers',[])
       }
     });
   }
-]).controller('listController', function($scope, RouteFactory) {
-  RouteFactory.get(function(data){
-    //$scope.routes = data.data;
-    $scope.routes = [];
-    angular.forEach(data.data, function(object){
-      this.route = {};
-      this.route['id'] = object.id;
-      this.route['Name'] = object.attributes.name;
-      this.route['Length'] = object.attributes.length_in_meters;
-      this.route['Popularity'] = object.attributes.popularity;
-      console.log(this.route)
-      this.push(this.route);
-    }, $scope.routes);
-  });
-});
+]);
