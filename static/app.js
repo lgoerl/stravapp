@@ -131,18 +131,4 @@ angular.module('myApp.Controllers',[])
       }
     });
   }
-]).controller('listController', function($scope, RouteFactory) {
-  RouteFactory.get(function(data){
-    //$scope.routes = data.data;
-    $scope.routes = [];
-    angular.forEach(data.data, function(object){
-      this.route = {};
-      this.route['id'] = object.id;
-      this.route['Name'] = object.attributes.name;
-      this.route['Length'] = object.attributes.length_in_meters;
-      this.route['Popularity'] = object.attributes.popularity;
-      console.log(this.route)
-      this.push(this.route);
-    }, $scope.routes);
-  });
-});
+]);
