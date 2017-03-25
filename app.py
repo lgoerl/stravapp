@@ -4,13 +4,13 @@ from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 from marshmallow import validate, ValidationError
-import os, json
+import os, json, requests, logging, sys
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
 
@@ -47,14 +47,16 @@ class RouteSchema(Schema):
 
     # self links
     def get_top_level_links(self, data, many):
-        if many:
-            self_link = "/routes/"
+        '''if many:
+            self_link = "/routes/fart"
         else:
             self_link = "/routes/{}".format(data['id'])
-        return {'self': self_link}
+        self_link = custom_endpoint'''
+        return {'error':False, 'self': "/api/v2/routes.json"}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
-        type_ = 'routes'
+        type_ = 'route'
+
 
 
 
@@ -71,24 +73,107 @@ schema = RouteSchema(strict=True)
 
  
 # Create CRUD classes using the Flask-RESTful Resource class
-class CreateListRoutes(Resource):
+'''class CreateListRoutes(Resource):
     
     def get(self):
         routes_query = Routes.query.limit(5)
         results = schema.dump(routes_query, many=True).data
         #return results['data']
-        return results
+        return results'''
+
+class queryRoutes(Resource):
+
+    def address2latlong(self, address):
+        geoparams = { 'format'     :'json', 
+                   'addressdetails': 1, 
+                   'q'             : address}
+        tempjson = requests.get('http://nominatim.openstreetmap.org/search', params=geoparams).json()[0]
+        coords = (float(tempjson['lat']),float(tempjson['lon']))
+        return coords
+
+
+    def get(self, custom_input):
+        custom_input = custom_input.split('&')
+        params = {}
+        for x in custom_input:
+            params[x.split('=')[0]] = x.split('=')[1]
+        invalids = [x for x in params.keys() if x not in set(['loop', 'start_loc', 'end_loc', 'dist_max','dist_min','elev_max','elev_min','route_type','route_subtype'])]
+        if not invalids:    
+            q = Routes.query
+            try:
+                if 'dist_max' in params.keys():
+                    q = q.filter(Routes.length_in_meters<=float(params['dist_max']))
+                if 'dist_min' in params.keys():
+                    q = q.filter(Routes.length_in_meters>=float(params['dist_min']))
+                if 'elev_max' in params.keys():
+                    q = q.filter(Routes.elevation_gain_in_meters<=float(params['elev_max']))
+                if 'elev_min' in params.keys():
+                    q = q.filter(Routes.elevation_gain_in_meters>=float(params['elev_min']))
+                if 'route_type' in params.keys():
+                    q = q.filter(Routes.route_type==int(params['route_type']))
+                if 'route_subtype' in params.keys():
+                    q = q.filter(Routes.sub_type==int(params['route_subtype']))
+            except ValueError as err: 
+                resp = jsonify({"error":err.message, "status_code":403, "links":{"error":True}})
+                return resp
+            # make a dict with vars as keys and these junks as values
+            # for var in params q=q.filter(blah)
+            if 'start_loc' in params.keys():
+                try:
+                    search_str = ' '.join(params['start_loc'].split('+'))
+                    temp = self.address2latlong(search_str)
+                    start = {'lat_lower':temp[0]-.003, 'lat_upper':temp[0]+.003, 'lon_lower':temp[1]-.003, 'lon_upper':temp[1]+.003}
+                    q = q.filter(Routes.start_lon<=start['lon_upper'])\
+                    .filter(Routes.start_lon>=start['lon_lower'])\
+                    .filter(Routes.start_lat<=start['lat_upper'])\
+                    .filter(Routes.start_lat>=start['lat_lower'])
+                except IndexError as err:
+                    resp = jsonify({"data":[],"error":"No matching location was found.", "status_code":404, "links":{"error":True}})
+                    return resp
+            if 'end_loc' in params.keys():
+                try:
+                    search_str = ' '.join(params['end_loc'].split('+'))
+                    temp = self.address2latlong(search_str)
+                    end = {'lat_lower':temp[0]-.003, 'lat_upper':temp[0]+.003, 'lon_lower':temp[1]-.003, 'lon_upper':temp[1]+.003}
+                    q = q.filter(Routes.end_lon<=end['lon_upper'])\
+                    .filter(Routes.end_lon>=end['lon_lower'])\
+                    .filter(Routes.end_lat<=end['lat_upper'])\
+                    .filter(Routes.end_lat>=end['lat_lower'])
+                except IndexError as err:
+                    resp = jsonify({'error':"No matching location was found.", "status_code":404, "links":{"error":True}})
+                    return resp                                                  
+            if 'loop' in params.keys():
+                q = q.filter(func.abs(Routes.start_lat-Routes.end_lat)+func.abs(Routes.start_lon-Routes.end_lon)<=.003)
+
+
+            results_query = q.limit(20)
+            results = schema.dump(results_query, many=True)
+            if results.data: 
+                return results
+            else: 
+                resp = jsonify({"error":"Your search returned no results. Try a more general search.", "status_code":403, "links":{"error":True}})
+                return resp
+        else: 
+            resp = jsonify({"error":"You have specified the following invalid search parameters: {}.".format(', '.join(invalids)), "status_code":204, "links":{"error":True}})
+            return resp
+
 
 
 # Map classes to API enspoints
-api.add_resource(CreateListRoutes, '.json')
-app.register_blueprint(api_v1, url_prefix='/api/v1/routes')
+'''api.add_resource(CreateListRoutes, '.json')'''
+api.add_resource(queryRoutes, '/<custom_input>.json', endpoint='api/v2/routes/query')
+app.register_blueprint(api_v1, url_prefix='/api/v2/routes')
 
 
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
-    return render_template('index.html')
+    if request.method == 'GET':
+        return render_template('index.html')
+    else:
+        #true = [x for x in request.form.keys() if request.form[x]!=None]
+        api_caller = queryRoutes()
+        return '&'.join(['{}={}'.format(x,request.format[x]) for x in request.form.keys() if request.form[x]!=None])
 
 @app.route('/test')
 def test():
@@ -102,6 +187,9 @@ def show_all():
 
 
 
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(host='0.0.0.0', port=port, debug=True)

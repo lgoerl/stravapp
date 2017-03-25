@@ -1,0 +1,48 @@
+<form ng-submit="appForm.submit()">
+  Distance (in meters) the route covers:<br>
+    <input type="number" placeholder="minimum" ng-model="appForm.data.dist_min">
+	  <input type="number" placeholder="maximum" ng-model="appForm.data.dist_max"><br><br>
+	Total elevation change (in meters) along the route:<br>
+    <input type="number" placeholder="minimum" ng-model="appForm.data.elev_min">
+	  <input type="number" placeholder="maximum" ng-model="appForm.data.elev_max"><br><br>
+
+	Route type:<br>
+	  <select ng-model='appForm.data.route_type'>
+      <option value='null'></option>
+	    <option value='1'>Cycling</option>
+	    <option value='2'>Running</option>
+	  </select><br>
+	Route subtype:<br>
+	  <select ng-model='appForm.data.route_subtype'>
+      <option value='null'></option>
+	    <option value='1'>Road</option>
+	    <option value='2'>Mountain</option>
+	    <option value='3'>Cyclocross</option>
+	    <option value='4'>Trail Run</option>
+	  </select><br>
+
+
+	<!-- advanced options -->
+	  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
+      <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">advanced options<br />
+      <div class="check-element animate-show-hide" ng-show="checked">
+
+        Search for routes starting near a
+        <div class='custom_tooltip'>location
+          <span class="custom_tooltiptext">Your search will be more accurate if you use commas to separate fields.</span>
+
+        </div>:<br>
+
+        Starting location:<br>
+        <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.start_loc" class='resizedTextbox'><br>
+        Ending location:<br>
+        <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
+      </div>
+  <input type='reset'/>
+  <input type='submit'/><br>
+
+</form>
+<!--<button ui-sref="routes.list">Query</button>-->
+<toaster-container toaster-options="{'position-class': 'toast-center', 'close-button':true}"></toaster-container>
+
+<div ui-view=''></div>
