@@ -52,7 +52,7 @@ class RouteSchema(Schema):
         else:
             self_link = "/routes/{}".format(data['id'])
         self_link = custom_endpoint'''
-        return {'self': "/api/v2/routes.json"}
+        return {'error':False, 'self': "/api/v2/routes.json"}
             #The below type object is a resource identifier object as per http://jsonapi.org/format/#document-resource-identifier-objects
     class Meta:
         type_ = 'route'
