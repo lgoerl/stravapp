@@ -63,6 +63,16 @@ angular.module('myApp.Controllers',[])
              start_loc:null,
              end_loc:null
       },
+      data: {dist_max:null,
+             dist_min:null,
+             elev_max:null,
+             elev_min:null,
+             route_type:null,
+             route_subtype:null,
+             loop:null,
+             start_loc:null,
+             end_loc:null
+      },
       submit: function(){
         nonz = {};
         keys = Object.keys($scope.appForm.data)
