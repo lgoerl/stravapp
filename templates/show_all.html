@@ -2,28 +2,28 @@
 <html lang = "en">
    <head></head>
    <body>
-      
+
       <h3>
-         <a href = "{{ url_for('show_all') }}">Comments - Flask 
+         <a href = "{{ url_for('show_all') }}">Comments - Flask
             SQLAlchemy example</a>
       </h3>
-      
+
       <hr/>
       {%- for message in get_flashed_messages() %}
          {{ message }}
       {%- endfor %}
-		
-      
+
+
       <table>
          <thead>
             <tr>
                <th>id</th>
                <th>Name</th>
                <th>Length</th>
-               <th>Poopularity</th>
+               <th>Popularity</th>
             </tr>
          </thead>
-         
+
          <tbody>
             {% for route in routes %}
                <tr>
@@ -35,6 +35,6 @@
             {% endfor %}
          </tbody>
       </table>
-      
+
    </body>
 </html>
