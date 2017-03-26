@@ -25,7 +25,7 @@
 /* custom_Tooltip text */
 .custom_tooltip .custom_tooltiptext {
   visibility: hidden;
-  width: 120px;
+  width: 130px;
   background-color: black;
   color: #fff;
   text-align: center;
@@ -35,14 +35,14 @@
   z-index: 1;
   top: -5px;
   left: 120%;
-  line-height: 70%;
+  line-height: 80%;
 }
 
 .custom_tooltip .custom_tooltiptext::after {
   content: "";
   position: absolute;
   top: 40%;
-  right: 100%; 
+  right: 100%;
   margin-top: -5px;
   border-width: 5px;
   border-style: solid;
