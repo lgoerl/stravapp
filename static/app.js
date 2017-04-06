@@ -52,6 +52,10 @@ angular.module('myApp.Controllers',[])
     $scope.reset = function(){
       angular.copy($scope.appForm.cleared, $scope.appForm.data);
     },
+    $scope.clear_addresses = function(){
+      $scope.appForm.data.start_loc = null;
+      $scope.appForm.data.end_loc = null;
+    },
     $scope.appForm = {
       cleared: {dist_max:null,
              dist_min:null,

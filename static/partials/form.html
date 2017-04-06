@@ -20,7 +20,7 @@
 
 	<!-- advanced options -->
 	  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
-      <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide">search near a location<br />
+      <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide" ng-change="clear_addresses()">search near a location<br />
       <div class="check-element animate-show-hide" ng-show="checked">
 
         Search for routes starting near a
