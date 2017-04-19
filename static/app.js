@@ -102,11 +102,11 @@ angular.module('myApp.Controllers',[])
       enableSorting:true,
       columnDefs:[
         {name: 'id', visible:false},
-        {name: 'Name', enableSorting:false, cellTemplate:'<a href="https://strava.com/routes/{{row.entity.id}}" target="_blank">{{COL_FIELD}}</a>'},
-        {name: 'Length', enableSorting:true},
-        {name: 'Elevation', enableSorting:true},
-        {name: 'Type', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Cycling" : "Running"}}</div>'},
-        {name: 'Subtype', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Road" : (COL_FIELD == 2 ? "Mountain" : (COL_FIELD == 3 ? "Cyclocross" : "Trail Run"))}}</div>'}
+        {name: 'Name', enableSorting:false, cellTemplate:'<a href="https://strava.com/routes/{{row.entity.id}}" target="_blank">{{COL_FIELD}}</a>', width:"*"},
+        {name: 'Length', enableSorting:true, width:80},
+        {name: 'Elevation', enableSorting:true, width:90},
+        {name: 'Type', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Cycling" : "Running"}}</div>', width:80},
+        {name: 'Subtype', enableSorting:false, cellTemplate:'<div>{{COL_FIELD == 1 ? "Road" : (COL_FIELD == 2 ? "Mountain" : (COL_FIELD == 3 ? "Cyclocross" : "Trail Run"))}}</div>', width:90}
         ],
         data:[]
     };
