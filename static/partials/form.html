@@ -49,13 +49,13 @@
           <span class="custom_tooltiptext">Your search will be more accurate if you use commas to separate fields.</span>
 
         </div>:<br>
-        <md-input-container>
+        <md-input-container class='resizedTextbox'>
         <label>Starting location</label>
-          <input type="text" ng-model="appForm.data.start_loc" class='resizedTextbox'>
-        </md-input-container>
-        <md-input-container>
+          <input type="text" ng-model="appForm.data.start_loc">
+        </md-input-container><br>
+        <md-input-container class='resizedTextbox'>
         <label>Ending location</label>
-          <input type="text" ng-model="appForm.data.end_loc" class='resizedTextbox'>
+          <input type="text" ng-model="appForm.data.end_loc">
         </md-input-container><br><br>
       </div>
   <input type='button' value='Reset' ng-click='reset()' />

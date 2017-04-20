@@ -1,9 +1,12 @@
 /* ui-grid */
 .myGrid {
-    width: 635px;
+    width: 640px;
     height: 350px;
   }
-
+.ui-grid-header-cell .ui-grid-cell-contents {
+    display: block;
+    width: calc(100% - 12px);
+}
 /* mdResource for tabs */
 .myApp md-content {
   background-color: transparent !important; }
@@ -56,4 +59,4 @@
 }
 
 /* Resized textbox for location query inputs */
-.resizedTextbox {width: 300px; height: 20px}
+.resizedTextbox {width: 400px; height: 20px}
