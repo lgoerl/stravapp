@@ -1,26 +1,47 @@
 <form ng-submit="appForm.submit()">
-  Distance (in meters) the route covers:<br>
-    <input type="number" placeholder="minimum" ng-model="appForm.data.dist_min">
-	  <input type="number" placeholder="maximum" ng-model="appForm.data.dist_max"><br><br>
-	Total elevation change (in meters) along the route:<br>
-    <input type="number" placeholder="minimum" ng-model="appForm.data.elev_min">
-	  <input type="number" placeholder="maximum" ng-model="appForm.data.elev_max"><br><br>
+<md-content layout-gt-sm="row" layout-padding>
+<div>
+  <span class="md-headline">Distance the route covers:</span><br>
+    <md-input-container>
+      <label>minimum</label>
+      <input type="number" ng-model="appForm.data.dist_min">
+    </md-input-container>
+    <md-input-container>
+      <label>maximum</label>
+  	  <input type="number" ng-model="appForm.data.dist_max">
+    </md-input-container>
+    <br><br>
+  <span class="md-headline">Total elevation change along the route:</span><br>
+    <md-input-container>
+      <label>minimum</label>
+      <input type="number" ng-model="appForm.data.elev_min">
+    </md-input-container>
+    <md-input-container>
+      <label>maximum</label>
+  	  <input type="number" ng-model="appForm.data.elev_max">
+    </md-input-container>
+    <br><br>
 
-	Route type:<br>  
-    <select ng-model='appForm.data.route_type'
-      ng-options='value.id as value.value for value in appForm.selection.base_type'>
-      <option value=''></option>
-    </select><br>
-  Route subtype:<br>
-    <select ng-model='appForm.data.route_subtype'
-      ng-options='value.id as value.value for value in appForm.selection.base_subtype'>
-      <option value=''></option>
-    </select><br>
+<span class="md-headline">Route types and subtypes:</span><br>
+  <md-input-container>
+  <label>type</label>
+    <md-select ng-model='appForm.data.route_type' ng-model-options="{trackBy: '$value'}">
+      <md-option ng-value="type.id" ng-repeat="type in appForm.selection.base_type">{{ type.value }}</md-option>
+      <md-option value=''>Any</md-option>
+    </md-select>
+  </md-input-container>
+  <md-input-container>
+  <label>subtype</label>
+    <md-select ng-model='appForm.data.route_subtype' ng-model-options="{trackBy: '$value'}">
+      <md-option ng-value="type.id" ng-repeat="type in appForm.selection.base_subtype">{{ type.value }}</md-option>
+      <md-option value=''>Any</md-option>
+    </md-select>
+  </md-input-container><br>
 
 
 	<!-- advanced options -->
-	  <input type='checkbox' ng-model="appForm.data.loop">Is complete loop<br>
-      <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide" ng-change="clear_addresses()">search near a location<br />
+	  <md-checkbox ng-model="appForm.data.loop" aria-label='loop'>Is complete loop</md-checkbox><br>
+    <md-checkbox ng-model="checked" aria-label="Toggle ngHide" ng-change="clear_addresses()">search near a location</md-checkbox><br />
       <div class="check-element animate-show-hide" ng-show="checked">
 
         Search for routes starting near a
@@ -28,15 +49,20 @@
           <span class="custom_tooltiptext">Your search will be more accurate if you use commas to separate fields.</span>
 
         </div>:<br>
-
-        Starting location:<br>
-        <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.start_loc" class='resizedTextbox'><br>
-        Ending location:<br>
-        <input type="text" placeholder="address, city, *state, *country, postcode" ng-model="appForm.data.end_loc" class='resizedTextbox'><br><br>
+        <md-input-container class='resizedTextbox'>
+        <label>Starting location</label>
+          <input type="text" ng-model="appForm.data.start_loc">
+        </md-input-container><br>
+        <md-input-container class='resizedTextbox'>
+        <label>Ending location</label>
+          <input type="text" ng-model="appForm.data.end_loc">
+        </md-input-container><br><br>
       </div>
   <input type='button' value='Reset' ng-click='reset()' />
   <input type='submit'/><br>
 
+</div>
+</md-content>
 </form>
 <toaster-container toaster-options="{'position-class': 'toast-center', 'close-button':true}"></toaster-container>
 
