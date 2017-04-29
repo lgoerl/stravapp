@@ -77,12 +77,20 @@ angular.module('myApp.Controllers',[])
              start_loc:null,
              end_loc:null
       },
+      dist_toggle: true,
       submit: function(){
         nonz = {};
         keys = Object.keys($scope.appForm.data)
         for (var k in Object.keys($scope.appForm.data)){
           if ($scope.appForm.data[keys[k]]){
-            nonz[keys[k]]=$scope.appForm.data[keys[k]];}
+            if (["dist_max","dist_min"].includes(keys[k])){
+              if ($scope.appForm.dist_toggle) {
+                nonz[keys[k]]=1000*$scope.appForm.data[keys[k]];}
+              else { nonz[keys[k]]=1609.344*$scope.appForm.data[keys[k]]; }
+            }
+            else {
+              nonz[keys[k]]=$scope.appForm.data[keys[k]];}
+          }
         }      
         endpoint = $httpParamSerializerJQLike(nonz);
         $state.go('routes.query',{end:endpoint}, {reload:'routes.query'});
