@@ -1,7 +1,11 @@
 <form ng-submit="appForm.submit()">
 <md-content layout-gt-sm="row" layout-padding>
 <div>
-  <span class="md-headline">Distance the route covers:</span><br>
+  <span class="md-headline">Distance the route covers:</span>
+
+    <md-switch ng-model="appForm.dist_toggle" aria-label="Switch1">
+        {{ appForm.dist_toggle ? "kilometers" : "miles" }}
+    </md-switch>
     <md-input-container>
       <label>minimum</label>
       <input type="number" ng-model="appForm.data.dist_min">
@@ -9,8 +13,9 @@
     <md-input-container>
       <label>maximum</label>
   	  <input type="number" ng-model="appForm.data.dist_max">
-    </md-input-container>
-    <br><br>
+    </md-input-container> 
+
+    <br>
   <span class="md-headline">Total elevation change along the route:</span><br>
     <md-input-container>
       <label>minimum</label>
