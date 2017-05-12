@@ -19,7 +19,7 @@ CREATE TABLE routes(
   elevation_gain_in_meters decimal(12),
   route_type integer,
   sub_type integer,
-  popularity boolean
+  popularity boolean,
   start_lat decimal(8,6),
   start_lon decimal(9,6),
   starting_point_geo_asset_name varchar,
@@ -34,19 +34,22 @@ CREATE TABLE routes(
   ending_point_geo_asset_admin2 varchar
 );
 
+CREATE TABLE route_segments(
+route_id integer,
+segment_id integer,
+segment_index integer,
+newly_created_segment boolean
+);
 
 
 CREATE TABLE segments(
-  route_id integer,
   id integer primary key,
   name varchar,
-  segment_index integer,
   distance decimal(12),
   elev_distance decimal(12),
   start_distance decimal(12),
   end_distance decimal(12),
   ratio decimal(7,4),
-  newly_created_segment boolean,
   avg_grade decimal(7,2)
 );
 
