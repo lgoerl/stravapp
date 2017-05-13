@@ -10,7 +10,6 @@ CREATE TABLE athletes(
 );
 
 
-
 CREATE TABLE routes(
   id integer primary key,
   athlete_id integer,
@@ -34,25 +33,25 @@ CREATE TABLE routes(
   ending_point_geo_asset_admin2 varchar
 );
 
+
 CREATE TABLE route_segments(
 route_id integer,
 segment_id integer,
 segment_index integer,
-newly_created_segment boolean
+newly_created_segment boolean,
+start_distance decimal(12),
+end_distance decimal(12)
 );
 
 
 CREATE TABLE segments(
   id integer primary key,
   name varchar,
-  distance decimal(12),
-  elev_distance decimal(12),
-  start_distance decimal(12),
-  end_distance decimal(12),
+  length_in_meters decimal(12),
+  elevation_gain_in_meters decimal(12),
   ratio decimal(7,4),
   avg_grade decimal(7,2)
 );
-
 
 
 CREATE TABLE waypoints(
