@@ -30,7 +30,8 @@ CREATE TABLE routes(
   ending_point_geo_asset_name varchar,
   ending_point_geo_asset_cc varchar,
   ending_point_geo_asset_admin1 varchar,
-  ending_point_geo_asset_admin2 varchar
+  ending_point_geo_asset_admin2 varchar,
+  start_end_separation_in_meters decimal(12)
 );
 
 
